@@ -24,7 +24,8 @@
 #include <linux/mfd/core.h>
 
 #include <linux/jz4770-adc.h>
-
+#define RIGHT_REMOTE_SENSING_NOT_WORK//右遥感失效
+//#define LEFT_REMOTE_SENSING_NOT_WORK//左遥感失效
 
 #define JZ_REG_ADC_TS_SAME	0
 #define JZ_REG_ADC_TS_WAIT	4
@@ -69,11 +70,21 @@ static irqreturn_t jz_joystick_irq_handler(int irq, void *devid)
 
 	val = readl(joystick->base + JZ_REG_ADC_TS_DATA);
 	val2 = readl(joystick->base + JZ_REG_ADC_TS_DATA);
+	#if defined(LEFT_REMOTE_SENSING_NOT_WORK)
+	x1 = 1621;
+	y1 = 1624;
+	//printk("%s-------%s %d %d %d\n",__FILE__,__func__,__LINE__,x1,y1);
+	#else
 	x1 = (val >> 16) & 0xFFF;
 	y1 = val & 0xFFF;
-	
+	#endif
+	#if defined(RIGHT_REMOTE_SENSING_NOT_WORK)
+	x2 = 1650;
+	y2 = 1650;
+	#else
 	x2 = (val2 >> 16) & 0xFFF;
 	y2 = val2 & 0xFFF;
+	#endif
 	
 	//printk("joystick: x1=%d y1=%d\n", x1, y1);
 	//printk("joystick: x2=%d y2=%d\n", x2, y2);
@@ -166,19 +177,19 @@ static int jz_joystick_probe(struct platform_device *pdev)
 	}
 	joystick->input_dev = input_dev;
 
-	input_dev->name = "analog joystick";
+	input_dev->name = "joystick";
 	input_dev->id.bustype = BUS_HOST;
 	input_dev->dev.parent = &pdev->dev;
 
-	__set_bit(EV_ABS, input_dev->evbit);
-	input_set_abs_params(input_dev, ABS_X, JOYSTICK_MIN_X1, JOYSTICK_MAX_X1,
-			     JOYSTICK_NOISE_X1, JOYSTICK_FLAT_X1);
-	input_set_abs_params(input_dev, ABS_Y, JOYSTICK_MIN_Y1, JOYSTICK_MAX_Y1,
-			     JOYSTICK_NOISE_Y1, JOYSTICK_FLAT_Y1);
-	input_set_abs_params(input_dev, ABS_RX, JOYSTICK_MIN_X2, JOYSTICK_MAX_X2,
-			     JOYSTICK_NOISE_X2, JOYSTICK_FLAT_X2);
-	input_set_abs_params(input_dev, ABS_RY, JOYSTICK_MIN_Y2, JOYSTICK_MAX_Y2,
-			     JOYSTICK_NOISE_Y2, JOYSTICK_FLAT_Y2);
+//	__set_bit(EV_ABS, input_dev->evbit);
+//	input_set_abs_params(input_dev, ABS_X, JOYSTICK_MIN_X1, JOYSTICK_MAX_X1,
+//			     JOYSTICK_NOISE_X1, JOYSTICK_FLAT_X1);
+//	input_set_abs_params(input_dev, ABS_Y, JOYSTICK_MIN_Y1, JOYSTICK_MAX_Y1,
+//			     JOYSTICK_NOISE_Y1, JOYSTICK_FLAT_Y1);
+//	input_set_abs_params(input_dev, ABS_RX, JOYSTICK_MIN_X2, JOYSTICK_MAX_X2,
+//			     JOYSTICK_NOISE_X2, JOYSTICK_FLAT_X2);
+//	input_set_abs_params(input_dev, ABS_RY, JOYSTICK_MIN_Y2, JOYSTICK_MAX_Y2,
+//			     JOYSTICK_NOISE_Y2, JOYSTICK_FLAT_Y2);
 
 	input_set_drvdata(input_dev, joystick);
 	input_dev->open = jz_joystick_open;
