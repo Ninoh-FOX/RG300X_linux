@@ -641,7 +641,7 @@ static const char * gcw0_joystick_gpiokeys_whitelist[] = {
 
 static const struct linkdev_pdata_device_info gcw0_joystick_devices[] = {
 	{
-		.name = "analog joystick",
+		.name = "joystick",
 	},
 	{
 		.name = "gpio-keys",
