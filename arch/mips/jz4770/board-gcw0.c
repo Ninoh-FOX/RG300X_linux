@@ -563,7 +563,7 @@ static struct platform_pwm_backlight_data gcw0_backlight_pdata = {
 	.polarity = PWM_POLARITY_NORMAL,
 	.max_brightness = 255,
 	.dft_brightness = 150,
-	.pwm_period_ns = 40000, /* 25 kHz: outside human hearing range */
+	.pwm_period_ns = 35000, /* 25 kHz: outside human hearing range */
 };
 
 static struct platform_device gcw0_backlight_device = {
